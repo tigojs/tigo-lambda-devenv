@@ -6,5 +6,8 @@
   "lambda": {
     "allowRequire": [],
     "env": {}
+  },
+  "rollup": {
+    output: "./dist/bundled.js"
   }
 }

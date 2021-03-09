@@ -1,5 +1,6 @@
 const { babel } = require('@rollup/plugin-babel');
 const { nodeResolve } = require('@rollup/plugin-node-resolve');
+const devrc = require('./.tigodev');
 const fs = require('fs');
 
 const pkg = JSON.parse(fs.readFileSync('./package.json'));
@@ -12,7 +13,7 @@ const extensions = ['.js'];
 const options = {
   input: './src/main.js',
   output: {
-    file: './dist/bundled.js',
+    file: devrc?.rollup?.output || './dist/bundled.js',
     format: 'cjs',
     strict: false,
   },
