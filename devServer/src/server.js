@@ -2,6 +2,7 @@ const Koa = require('koa');
 const koaBody = require('koa-body');
 const compress = require('koa-compress');
 const TreeRouter = require('koa-tree-router');
+const koaLogger = require('koa-logger');
 const zlib = require('zlib');
 const logger = require('./utils/logger');
 const LambdaRunner = require('./lambda');
@@ -45,16 +46,28 @@ class DevServer {
         },
       })
     );
+    this.server.use(
+      koaLogger((str, args) => {
+        this.logger.debug(str);
+      })
+    );
     errorWrapper(this.server);
     // add dev config to context
     this.server.context.lambda = this.config?.lambda || {};
     this.server.context.rollup = this.config?.rollup || {};
+    // add logger to server and context
+    this.server.logger = this.logger;
+    this.server.context.logger = this.logger;
     // operate rollup
     const watcher = await startRollupWatch();
     this.watcher = watcher;
     // register controller
     const lambdaRunner = new LambdaRunner(this);
-    this.router.get('/', lambdaRunner.middleware);
+    const methods = ['get', 'post', 'head', 'put', 'delete', 'patch'];
+    methods.forEach((method) => {
+      this.router[method]('/*path', lambdaRunner.middleware);
+    });
+    this.server.use(this.router.routes());
     this.logger.info('Dev server initialized.');
     // start listening
     const port = this.config?.devServer?.port || 9292;
