@@ -1,0 +1,31 @@
+{
+  "name": "tigo-lambda-devenv",
+  "version": "0.1.0",
+  "description": "tigo lambda develope environment",
+  "main": "dist/bundled.js",
+  "scripts": {
+    "build": "rollup -c",
+    "start": "node ./devServer/main.js",
+    "dev": "node ./devServer/main.js"
+  },
+  "author": "BackRunner",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.13.8",
+    "@babel/preset-env": "^7.13.9",
+    "@rollup/plugin-babel": "^5.3.0",
+    "@rollup/plugin-node-resolve": "^11.2.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.21.0",
+    "eslint-config-ali": "^12.0.1",
+    "eslint-plugin-import": "^2.22.1",
+    "koa": "^2.13.1",
+    "koa-body": "^4.2.0",
+    "koa-compress": "^5.0.1",
+    "koa-tree-router": "^0.7.0",
+    "log4js": "^6.3.0",
+    "lru-cache": "^6.0.0",
+    "rollup": "^2.40.0",
+    "vm2": "^3.9.2"
+  }
+}
