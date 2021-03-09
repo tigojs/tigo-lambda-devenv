@@ -6,6 +6,7 @@ const zlib = require('zlib');
 const logger = require('./utils/logger');
 const LambdaRunner = require('./lambda');
 const startRollupWatch = require('./utils/watcher');
+const errorWrapper = require('./utils/error');
 
 class DevServer {
   constructor(config) {
@@ -44,18 +45,21 @@ class DevServer {
         },
       })
     );
+    errorWrapper(this.server);
     // add dev config to context
     this.server.context.lambda = this.config?.lambda || {};
+    this.server.context.rollup = this.config?.rollup || {};
     // operate rollup
     const watcher = await startRollupWatch();
     this.watcher = watcher;
     // register controller
     const lambdaRunner = new LambdaRunner(this);
     this.router.get('/', lambdaRunner.middleware);
+    this.logger.info('Dev server initialized.');
     // start listening
     const port = this.config?.devServer?.port || 9292;
-    this.logger.info('Dev server initialized.');
     this.server.listen(port);
+    this.logger.info(`Dev server listening on ${port}.`);
   }
 }
 

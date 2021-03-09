@@ -8,6 +8,6 @@
     "env": {}
   },
   "rollup": {
-    output: "./dist/bundled.js"
+    "output": "./dist/bundled.js"
   }
 }
