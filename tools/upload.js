@@ -1,0 +1,86 @@
+const { getAgent } = require('@tigojs/api-request');
+const inquirer = require('inquirer');
+const path = require('path');
+const fs = require('fs');
+
+const CONFIG_PATH = path.resolve(__dirname, '../.tigodev');
+
+// read dev config
+if (!fs.existsSync(CONFIG_PATH)) {
+  throw new Error('Cannot find development configuration.');
+}
+const devConfig = JSON.parse(fs.readFileSync(CONFIG_PATH, { encoding: 'utf-8' }));
+const uploadConfig = devConfig?.upload;
+if (!uploadConfig) {
+  throw new Error('Cannot find upload configuration in the .tigodev.');
+}
+
+// read bundled script
+const outputPath = devConfig?.rollup?.output || './dist/bundled.js';
+const BUNDLED_PATH = path.resolve(__dirname, '../', outputPath);
+if (!fs.existsSync(BUNDLED_PATH)) {
+  throw new Error('Cannot find bundled script.');
+}
+const bundledScript = fs.readFileSync(BUNDLED_PATH, { encoding: 'utf-8' });
+
+// check upload config
+const shouldNotBeEmpty = ['host', 'https', 'accessKey', 'secretKey'];
+shouldNotBeEmpty.forEach((key) => {
+  if (!uploadConfig[key]) {
+    throw new Error(`Option "${key}" in upload configuration is necessary, please set it first.`);
+  }
+});
+
+async function sendSaveRequest() {
+  // check name
+  let scriptId = uploadConfig.scripId;
+  let name = uploadConfig.name;
+  let isNew = false;
+  if (!scriptId) {
+    isNew = true;
+  }
+  if (!name) {
+    const answers = await inquirer.prompt([
+      {
+        type: 'input',
+        message: 'This seems like a new script, you should give it a name.',
+        default: '',
+        validate: (input) => {
+          if (!input.trim()) {
+            return 'Name is empty.';
+          }
+          return true;
+        },
+      },
+    ]);
+    name = answers.name.trim();
+    if (!name) {
+      throw new Error('Cannot get the name of script.');
+    }
+  }
+  const agent = getAgent(uploadConfig);
+  const action = isNew ? 'add' : 'edit';
+  const params = {
+    action,
+    name,
+    content: Buffer.from(bundledScript, 'utf-8').toString('base64'),
+  };
+  if (action === 'edit') {
+    Object.assign(params, id);
+  }
+  const env = devConfig?.lambda?.env;
+  if (env) {
+    Object.assign(params, {
+      env,
+    });
+  }
+  const res = await agent.post('/faas/save').send();
+  if (res.status !== 200) {
+    throw new Error(`Upload failed.${` ${res.body.message}`}`);
+  }
+  devConfig.upload.name = name;
+  // write dev config
+  fs.writeFileSync(CONFIG_PATH, JSON.stringify(devConfig, null, '  '), { encoding: 'utf-8' });
+}
+
+sendSaveRequest();
