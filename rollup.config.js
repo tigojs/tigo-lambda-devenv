@@ -3,7 +3,7 @@ const { nodeResolve } = require('@rollup/plugin-node-resolve')
 const fs = require('fs');
 
 const pkg = JSON.parse(fs.readFileSync('./package.json', { encoding: 'utf-8' }));
-const devrc = JSON.parse(fs.readFileSync('./.tigodev', { encoding: 'utf-8' }));
+const devrc = JSON.parse(fs.readFileSync('./.tigodev.json', { encoding: 'utf-8' }));
 
 // regard all packages as external by default
 const external = Object.keys(pkg.dependencies || {});

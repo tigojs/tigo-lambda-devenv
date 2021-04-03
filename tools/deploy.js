@@ -3,16 +3,16 @@ const inquirer = require('inquirer');
 const path = require('path');
 const fs = require('fs');
 
-const CONFIG_PATH = path.resolve(__dirname, '../.tigodev');
+const CONFIG_PATH = path.resolve(__dirname, '../.tigodev.json');
 
 // read dev config
 if (!fs.existsSync(CONFIG_PATH)) {
   throw new Error('Cannot find development configuration.');
 }
 const devConfig = JSON.parse(fs.readFileSync(CONFIG_PATH, { encoding: 'utf-8' }));
-const uploadConfig = devConfig?.upload;
-if (!uploadConfig) {
-  throw new Error('Cannot find upload configuration in the .tigodev.');
+const deployConfig = devConfig?.deploy;
+if (!deployConfig) {
+  throw new Error('Cannot find deploy configuration in the .tigodev.');
 }
 
 // read bundled script
@@ -26,15 +26,15 @@ const bundledScript = fs.readFileSync(BUNDLED_PATH, { encoding: 'utf-8' });
 // check upload config
 const shouldNotBeEmpty = ['host', 'https', 'accessKey', 'secretKey'];
 shouldNotBeEmpty.forEach((key) => {
-  if (!uploadConfig[key]) {
+  if (!deployConfig[key]) {
     throw new Error(`Option "${key}" in upload configuration is necessary, please set it first.`);
   }
 });
 
 async function sendSaveRequest() {
   // check name
-  let scriptId = uploadConfig.scripId;
-  let name = uploadConfig.name;
+  let scriptId = deployConfig.scripId;
+  let name = deployConfig.name;
   let isNew = false;
   if (!scriptId) {
     isNew = true;
@@ -58,7 +58,7 @@ async function sendSaveRequest() {
       throw new Error('Cannot get the name of script.');
     }
   }
-  const agent = getAgent(uploadConfig);
+  const agent = getAgent(deployConfig);
   const action = isNew ? 'add' : 'edit';
   const params = {
     action,

@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 
 // read config
-const CONFIG_PATH = path.resolve(__dirname, '../.tigodev');
+const CONFIG_PATH = path.resolve(__dirname, '../.tigodev.json');
 
 let config;
 if (fs.existsSync(CONFIG_PATH)) {
