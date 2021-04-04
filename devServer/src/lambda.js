@@ -3,11 +3,14 @@ const LRUCache = require('lru-cache');
 const fs = require('fs');
 const { createContextProxy } = require('./utils/context');
 const allowList = require('./constants/allowList');
+const Response = require('./classes/Response');
+const EventEmitter = require('events');
+const fetch = require('node-fetch');
 
 const CACHE_KEY = 'tigo_lambda_dev';
 
 const cache = new LRUCache({
-  max: 100,
+  max: 10,
 });
 
 class LambdaRunner {
@@ -26,18 +29,26 @@ class LambdaRunner {
   }
   async middleware(ctx, next) {
     const bundled = ctx.rollup.output || './dist/bundled.js';
+    let eventEmitter;
     const cached = cache.get(CACHE_KEY);
     if (cached) {
-      await cached(createContextProxy(ctx));
+      eventEmitter = cached.eventEmitter;
     } else {
       if (!bundled || !fs.existsSync(bundled)) {
         throw new Error('Cannot find the bundled script file.');
       }
+      const eventEmitter = new EventEmitter();
+      const addEventListener = (name, func) => {
+        eventEmitter.on(name, func);
+      };
       const allowRequire = ctx.lambda.allowedRequire || [];
       const script = fs.readFileSync(bundled, { encoding: 'utf-8' });
       const vm = new NodeVM({
         eval: false,
         wasm: false,
+        sandbox: {
+          addEventListener,
+        },
         require: {
           external: {
             modules: [...allowList, ...allowRequire],
@@ -45,11 +56,32 @@ class LambdaRunner {
         },
       });
       vm.freeze('env', ctx.lambda.env || {});
-      const handleRequestFunc = vm.run(script);
-      if (!handleRequestFunc) {
-        throw new Error('Cannot access handleRequestFunc method.');
-      }
-      await handleRequestFunc(createContextProxy(ctx));
+      vm.freeze(Response, 'Response');
+      vm.freeze(fetch, 'fetch');
+      vm.run(script);
+      cache.set(CACHE_KEY, { vm, eventEmitter });
+      await new Promise((resolve, reject) => {
+        const wait = setTimeout(() => {
+          reject('The function execution time is above the limit.');
+        }, (ctx.lambda.maxWaitTime || 10) * 1000);
+        eventEmitter.emit('request', {
+          context: createContextProxy(ctx),
+          respondWith: (response) => {
+            if (!response || !response instanceof Response) {
+              reject('Response is invalid, please check your code.');
+            }
+            ctx.status = response.status || 200;
+            if (response.headers) {
+              Object.keys(response.headers).forEach((key) => {
+                ctx.set(key, response.headers.key);
+              });
+            }
+            ctx.body = response.body || '';
+            clearTimeout(wait);
+            resolve();
+          },
+        });
+      });
       await next();
     }
   }

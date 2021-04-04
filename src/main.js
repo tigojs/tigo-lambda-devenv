@@ -1,3 +1,5 @@
-async function handleRequest(ctx) {}
+addEventListener('request', async (event) => {
+  event.respondWith(await handleRequest(event.context));
+});
 
-module.exports = handleRequest;
+async function handleRequest(ctx) {}

@@ -1,6 +1,6 @@
 {
   "name": "tigo-lambda-devenv",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "tigo lambda develope environment",
   "main": "dist/bundled.js",
   "scripts": {
@@ -29,6 +29,7 @@
     "koa-tree-router": "^0.7.0",
     "log4js": "^6.3.0",
     "lru-cache": "^6.0.0",
+    "node-fetch": "^2.6.1",
     "rollup": "^2.40.0",
     "vm2": "^3.9.2"
   }

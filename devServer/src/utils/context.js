@@ -35,20 +35,6 @@ const allowContextProps = [
   'acceptsCharsets',
   'acceptsLanguages',
   'get',
-  // response aliases
-  'body',
-  'status',
-  'message',
-  'length',
-  'type',
-  'headerSent',
-  'redirect',
-  'attachment',
-  'set',
-  'append',
-  'remove',
-  'lastModified',
-  'etag',
 ]
 
 function createContextProxy(ctx) {
