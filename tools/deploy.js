@@ -33,13 +33,10 @@ shouldNotBeEmpty.forEach((key) => {
 
 async function sendSaveRequest() {
   // check name
-  let scriptId = deployConfig.scripId;
   let name = deployConfig.name;
   let isNew = false;
-  if (!scriptId) {
-    isNew = true;
-  }
   if (!name) {
+    isNew = true;
     const answers = await inquirer.prompt([
       {
         type: 'input',
@@ -78,7 +75,7 @@ async function sendSaveRequest() {
   if (res.status !== 200) {
     throw new Error(`Upload failed.${` ${res.body.message}`}`);
   }
-  devConfig.upload.name = name;
+  devConfig.deploy.name = name;
   // write dev config
   fs.writeFileSync(CONFIG_PATH, JSON.stringify(devConfig, null, '  '), { encoding: 'utf-8' });
 }
