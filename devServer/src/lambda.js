@@ -60,30 +60,30 @@ class LambdaRunner {
       vm.freeze(fetch, 'fetch');
       vm.run(script);
       cache.set(CACHE_KEY, { vm, eventEmitter });
-      await new Promise((resolve, reject) => {
-        const wait = setTimeout(() => {
-          reject('The function execution time is above the limit.');
-        }, (ctx.lambda.maxWaitTime || 10) * 1000);
-        eventEmitter.emit('request', {
-          context: createContextProxy(ctx),
-          respondWith: (response) => {
-            if (!response || !response instanceof Response) {
-              reject('Response is invalid, please check your code.');
-            }
-            ctx.status = response.status || 200;
-            if (response.headers) {
-              Object.keys(response.headers).forEach((key) => {
-                ctx.set(key, response.headers.key);
-              });
-            }
-            ctx.body = response.body || '';
-            clearTimeout(wait);
-            resolve();
-          },
-        });
-      });
-      await next();
     }
+    await new Promise((resolve, reject) => {
+      const wait = setTimeout(() => {
+        reject('The function execution time is above the limit.');
+      }, (ctx.lambda.maxWaitTime || 10) * 1000);
+      eventEmitter.emit('request', {
+        context: createContextProxy(ctx),
+        respondWith: (response) => {
+          if (!response || !response instanceof Response) {
+            reject('Response is invalid, please check your code.');
+          }
+          ctx.status = response.status || 200;
+          if (response.headers) {
+            Object.keys(response.headers).forEach((key) => {
+              ctx.set(key, response.headers.key);
+            });
+          }
+          ctx.body = response.body || '';
+          clearTimeout(wait);
+          resolve();
+        },
+      });
+    });
+    await next();
   }
 }
 
