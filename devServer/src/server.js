@@ -8,6 +8,7 @@ const logger = require('./utils/logger');
 const LambdaRunner = require('./lambda');
 const startRollupWatch = require('./utils/watcher');
 const errorWrapper = require('./utils/error');
+const { collectMockData } = require('./utils/mock');
 
 class DevServer {
   constructor(config) {
@@ -69,6 +70,10 @@ class DevServer {
     });
     this.server.use(this.router.routes());
     this.logger.info('Dev server initialized.');
+    // collect mock data
+    this.mock = await collectMockData();
+    this.server.mock = this.mock;
+    this.server.context.mock = this.mock;
     // start listening
     const port = this.config?.devServer?.port || 9292;
     this.server.listen(port);

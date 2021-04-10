@@ -6,6 +6,7 @@ const allowList = require('./constants/allowList');
 const Response = require('./classes/Response');
 const EventEmitter = require('events');
 const fetch = require('node-fetch');
+const CFS = require('./classes/CFS');
 
 const CACHE_KEY = 'tigo_lambda_dev';
 
@@ -26,6 +27,11 @@ class LambdaRunner {
         app.logger.info('Bundled script has been already rebuilt.');
       }
     });
+    // set this
+    this.app = app;
+    this.cfsEnabled = app.config.lambda?.cfs?.enable;
+    this.ossEnabled = app.config.lambda?.oss?.enable;
+    this.kvEnabled = app.config.lambda?.kv?.enable;
   }
   async middleware(ctx, next) {
     const bundled = ctx.rollup.output || './dist/bundled.js';
@@ -58,6 +64,9 @@ class LambdaRunner {
       vm.freeze('env', ctx.lambda.env || {});
       vm.freeze(Response, 'Response');
       vm.freeze(fetch, 'fetch');
+      if (this.cfsEnabled) {
+        vm.freeze(CFS(app.config.lambda?.cfs || {}, app.mock.cfs))
+      }
       vm.run(script);
       cache.set(CACHE_KEY, { vm, eventEmitter });
     }
