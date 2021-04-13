@@ -10,6 +10,8 @@ const OSS_MOCK_BASE = path.resolve(MOCK_BASE, './oss');
 
 const CFS_ALLOW_TYPE = ['.json', '.xml', '.yaml'];
 
+const FILE_ABSOLUTE_PATH = Symbol('file_absolute_path');
+
 async function collectCFSMock() {
   if (!fs.existsSync(CFS_MOCK_BASE)) {
     return;
@@ -59,10 +61,17 @@ async function collectBucketFiles(bucket, dirBase) {
       await collectBucketFiles(bucket, `${dirBase}/${name}`);
     }
     // is file, generate meta data
-    bucket[`${dirBase}/${name}`] = {
+    const handler = {
+      ownKeys: function (target) {
+        return Reflect.ownKeys(target);
+      },
+    };
+    const meta = {
       ...generateMeta(name, stat),
       fileId: uuidv4(),
+      [FILE_ABSOLUTE_PATH]: targetPath,
     };
+    bucket[`${dirBase}/${name}`] = new Proxy(meta, handler);
   });
   return bucket;
 }
@@ -100,5 +109,8 @@ async function collectMockData() {
 }
 
 module.exports = {
+  generateMeta,
   collectMockData,
+  FILE_ABSOLUTE_PATH,
+  OSS_MOCK_BASE,
 };
