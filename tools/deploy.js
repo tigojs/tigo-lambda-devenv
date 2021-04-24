@@ -24,7 +24,7 @@ if (!fs.existsSync(BUNDLED_PATH)) {
 const bundledScript = fs.readFileSync(BUNDLED_PATH, { encoding: 'utf-8' });
 
 // check upload config
-const shouldNotBeEmpty = ['host', 'https', 'accessKey', 'secretKey'];
+const shouldNotBeEmpty = ['host', 'https', 'base', 'accessKey', 'secretKey'];
 shouldNotBeEmpty.forEach((key) => {
   if (!deployConfig[key]) {
     throw new Error(`Option "${key}" in upload configuration is necessary, please set it first.`);
