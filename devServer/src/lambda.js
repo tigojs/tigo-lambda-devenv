@@ -65,7 +65,13 @@ class LambdaRunner {
       vm.freeze(Response, 'Response');
       vm.freeze(fetch, 'fetch');
       if (this.cfsEnabled) {
-        vm.freeze(CFS(app.config.lambda?.cfs || {}, app.mock.cfs))
+        vm.freeze(CFS(app.config.lambda?.cfs || {}, app.mock.cfs), 'CFS');
+      }
+      if (this.ossEnabled) {
+        vm.freeze(OSS(app.config.lambda?.oss || {}, app.mock.oss), 'OSS');
+      }
+      if (this.kvEnabled) {
+        vm.freeze(KV(app.config.lambda?.kv || {}), 'KV');
       }
       vm.run(script);
       cache.set(CACHE_KEY, { vm, eventEmitter });
