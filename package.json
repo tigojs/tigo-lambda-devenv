@@ -1,6 +1,6 @@
 {
   "name": "tigo-lambda-devenv",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "tigo lambda develope environment",
   "main": "dist/bundled.js",
   "scripts": {
