@@ -71,7 +71,7 @@ async function sendSaveRequest() {
       env,
     });
   }
-  const res = await agent.post('/faas/save').send();
+  const res = await agent.post('/faas/save').send(params);
   if (res.status !== 200) {
     throw new Error(`Upload failed.${` ${res.body.message}`}`);
   }
