@@ -7,6 +7,7 @@ const Response = require('./classes/Response');
 const EventEmitter = require('events');
 const fetch = require('node-fetch');
 const CFS = require('./classes/CFS');
+const Log = require('./classes/Log');
 
 const CACHE_KEY = 'tigo_lambda_dev';
 
@@ -72,6 +73,9 @@ class LambdaRunner {
       }
       if (this.kvEnabled) {
         vm.freeze(KV(app.config.lambda?.kv || {}), 'KV');
+      }
+      if (this.logEnabled) {
+        vm.freeze(new Log(), 'Log');
       }
       vm.run(script);
       cache.set(CACHE_KEY, { vm, eventEmitter });

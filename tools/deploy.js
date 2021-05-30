@@ -71,6 +71,12 @@ async function sendSaveRequest() {
       env,
     });
   }
+  const policy = devCOnfig?.lambda?.policy;
+  if (policy) {
+    Object.assign(params, {
+      policy,
+    });
+  }
   const res = await agent.post('/faas/save').send(params);
   if (res.status !== 200) {
     throw new Error(`Upload failed.${` ${res.body.message}`}`);
