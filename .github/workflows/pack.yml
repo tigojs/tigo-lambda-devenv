@@ -13,12 +13,12 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Tar files
-        run: tar -zcvf dist.tar.gz -C dist/ .
+        run: tar -zcvf devenv.tar.gz -C dist/ .
 
       - name: Create release
         uses: ncipollo/release-action@v1
         with:
           name: ${{ github.ref }}
-          artifact: dist.tar.gz
+          artifact: devenv.tar.gz
           draft: true
           token: ${{ secrets.GH_TOKEN }}
