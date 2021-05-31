@@ -1,0 +1,24 @@
+name: Pack when tagged
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build-and-pack:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Tar files
+        run: tar -zcvf dist.tar.gz -C dist/ .
+
+      - name: Create release
+        uses: ncipollo/release-action@v1
+        with:
+          name: ${{ github.ref }}
+          artifact: dist.tar.gz
+          draft: true
+          token: ${{ secrets.GH_TOKEN }}
