@@ -12,8 +12,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Tar files
-        run: tar -zcvf devenv.tar.gz .
+      - name: Archive files
+        run: git archive --format tar.gz --output "./devenv.tar.gz" main
 
       - name: Create release
         uses: ncipollo/release-action@v1
