@@ -12,13 +12,16 @@ const devrc = JSON.parse(fs.readFileSync('./.tigodev.json', { encoding: 'utf-8' 
 const external = [];
 const configuredExternal = devrc?.rollup?.external;
 if (configuredExternal && Array.isArray(configuredExternal)) {
-  external = external.concat();
+  external = external.concat(configuredExternal);
 }
-Object.keys(pkg.dependencies).forEach((dependency) => {
-  if (PREFIX_WHITELIST.includes(dependency)) {
-    external.push(dependency);
-  }
-});
+
+if (pkg.dependencies) {
+  Object.keys(pkg.dependencies).forEach((dependency) => {
+    if (PREFIX_WHITELIST.includes(dependency)) {
+      external.push(dependency);
+    }
+  });
+}
 
 const extensions = ['.js'];
 
