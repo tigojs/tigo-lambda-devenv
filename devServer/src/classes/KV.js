@@ -18,7 +18,11 @@ class KV {
   }
   async get(key) {
     try {
-      return await db.get(key);
+      return JSON.parse(
+        await db.get(key, {
+          asBuffer: false,
+        })
+      );
     } catch (err) {
       if (err.notFound) {
         return null;
@@ -27,7 +31,10 @@ class KV {
     }
   }
   async set(key, value) {
-    await db.put(key, value);
+    await db.put(key, JSON.stringify(value));
+  }
+  async remove(key) {
+    await db.del(key);
   }
 }
 
