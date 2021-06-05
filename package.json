@@ -1,7 +1,7 @@
 {
   "name": "tigo-lambda-devenv",
   "version": "0.3.0",
-  "description": "tigo lambda develope environment",
+  "description": "tigo lambda dev environment",
   "main": "dist/bundled.js",
   "scripts": {
     "build": "rollup -c",
