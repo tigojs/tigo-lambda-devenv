@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.4.0
+
+- Feat: move dev server and deploy script to dependencies as npm package.
+
 ## v0.3.1
 
 - Feat: add `remove` method to fake lambda KV.
