@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.4.1
+
+- Fix: wrong external dependencies resolve.
+
 ## v0.4.0
 
 - Feat: move dev server and deploy script to dependencies as npm package.
