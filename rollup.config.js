@@ -8,8 +8,9 @@ const PREFIX_WHITELIST = ['@tigojs/lambda-', '@tigojs/api-'];
 const pkg = JSON.parse(fs.readFileSync('./package.json', { encoding: 'utf-8' }));
 const devrc = JSON.parse(fs.readFileSync('./.tigodev.json', { encoding: 'utf-8' }));
 
+let external = [];
+
 // only module in require allow list are external package
-const external = [];
 const configuredExternal = devrc?.rollup?.external;
 if (configuredExternal && Array.isArray(configuredExternal)) {
   external = external.concat(configuredExternal);
@@ -17,8 +18,11 @@ if (configuredExternal && Array.isArray(configuredExternal)) {
 
 if (pkg.dependencies) {
   Object.keys(pkg.dependencies).forEach((dependency) => {
-    if (PREFIX_WHITELIST.includes(dependency)) {
-      external.push(dependency);
+    for (const prefix of PREFIX_WHITELIST) {
+      if (dependency.includes(prefix)) {
+        external.push(dependency);
+        return;
+      }
     }
   });
 }
