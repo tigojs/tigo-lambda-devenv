@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.4.4
+
+- Minor: upgrade dependencies.
+
 ## v0.4.3
 
 - Fix: external now will contains the packages in the `devDependencies`.
