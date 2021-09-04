@@ -1,14 +1,16 @@
 # Changelog
 
+## v0.4.3
+
+- Fix: external now will contains the packages in the `devDependencies`.
+
+- Fix: specify the `exports` in `output`.
+
 ## v0.4.2
 
 - Feat: support import static files in the script.
 
 - Feat: add `.prettierrc.js` to help formatting.
-
-- Fix: external now will contains the packages in the `devDependencies`.
-
-- Fix: specify the `exports` in `output`.
 
 ## v0.4.1
 
