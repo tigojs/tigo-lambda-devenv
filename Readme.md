@@ -68,6 +68,12 @@ If it is enabled, you can use `Log` API in your lambda as the same as the online
 
 At local, all the logs will be saved to `logs` folder.
 
+## Static files
+
+The development environment has been already included `rollup-plugin-string` and `@rollup/plugin-image`, which allow to import static text files and images to the script.
+
+By default, only the files in `/public` folder will be transformed to string, you can modify the options in the `rollup.config.js` to apply the plugins for more files.
+
 ## License
 
 MIT

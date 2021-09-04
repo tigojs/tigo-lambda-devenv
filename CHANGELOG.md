@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.4.2
+
+- Feat: support import static files in the script.
+
+- Feat: add `.prettierrc.js` to help formatting.
+
 ## v0.4.1
 
 - Fix: wrong external dependencies resolve.

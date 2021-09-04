@@ -1,6 +1,8 @@
 const { babel } = require('@rollup/plugin-babel');
 const { nodeResolve } = require('@rollup/plugin-node-resolve');
+const { string } = require('@backrunner/rollup-plugin-string');
 const commonjs = require('@rollup/plugin-commonjs');
+const image = require('@rollup/plugin-image');
 const fs = require('fs');
 
 const PREFIX_WHITELIST = ['@tigojs/lambda-', '@tigojs/api-'];
@@ -43,6 +45,12 @@ const options = {
   plugins: [
     nodeResolve(),
     commonjs(),
+    string({
+      include: ['./public/**/*.html', './public/**/*.css', './public/**/*.html'],
+    }),
+    image({
+      include: ['./public/**/*.+(png|jpg|jpeg|gif|svg|webp)'],
+    }),
     babel({
       exclude: ['node_modules/**'],
       babelHelpers: 'bundled',
