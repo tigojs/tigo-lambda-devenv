@@ -6,6 +6,8 @@
 
 - Feat: add `.prettierrc.js` to help formatting.
 
+- Fix: external now will contains the packages in the `devDependencies`.
+
 ## v0.4.1
 
 - Fix: wrong external dependencies resolve.

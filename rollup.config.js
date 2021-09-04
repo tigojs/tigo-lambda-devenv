@@ -18,8 +18,13 @@ if (configuredExternal && Array.isArray(configuredExternal)) {
   external = external.concat(configuredExternal);
 }
 
-if (pkg.dependencies) {
-  Object.keys(pkg.dependencies).forEach((dependency) => {
+const dependencies = Object.keys(pkg.dependencies || {});
+const devDependencies = Object.keys(pkg.devDependencies || {});
+
+const allDependencies = [].concat(dependencies).concat(devDependencies);
+
+if (allDependencies.length) {
+  allDependencies.forEach((dependency) => {
     for (const prefix of PREFIX_WHITELIST) {
       if (dependency.includes(prefix)) {
         external.push(dependency);
