@@ -8,6 +8,8 @@
 
 - Fix: external now will contains the packages in the `devDependencies`.
 
+- Fix: specify the `exports` in `output`.
+
 ## v0.4.1
 
 - Fix: wrong external dependencies resolve.

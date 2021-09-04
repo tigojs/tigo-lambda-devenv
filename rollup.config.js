@@ -42,6 +42,7 @@ const options = {
     file: devrc?.rollup?.output || './dist/bundled.js',
     format: 'cjs',
     strict: false,
+    exports: 'auto',
   },
   watch: {
     include: './src/**/*.js',
