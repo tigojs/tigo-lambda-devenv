@@ -19,7 +19,7 @@
     "@rollup/plugin-commonjs": "^20.0.0",
     "@rollup/plugin-image": "^2.1.1",
     "@rollup/plugin-node-resolve": "^13.0.4",
-    "@tigojs/dev-server": "^0.2.3",
+    "@tigojs/dev-server": "^0.2.4",
     "@tigojs/lambda-deploy-script": "^0.1.0",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.32.0",
