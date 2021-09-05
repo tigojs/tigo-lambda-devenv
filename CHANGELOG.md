@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.4.5
+
+- Minor: upgrade dev server.
+
 ## v0.4.4
 
 - Minor: upgrade dependencies.
